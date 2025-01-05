@@ -1,0 +1,728 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Biztory API",
+    "version": "1.0.0",
+    "description": "API documentation for Biztory application"
+  },
+  "paths": {
+    "/user": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get authenticated user",
+        "security": [{"apiKey": []}],
+        "responses": {
+          "200": {
+            "description": "User details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/create": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Create a new user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully or already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/UserExistsResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UserCreatedResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/update": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Update user information",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserUpdateResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/check": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Check if user exists",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserExistsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/biztory/invoices": {
+      "post": {
+        "tags": ["Invoices"],
+        "summary": "Create a new invoice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invoice created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Invoices"],
+        "summary": "Get all invoices",
+        "responses": {
+          "200": {
+            "description": "List of invoices",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+          "/biztory/invoices/{id}": {
+        "get": {
+          "tags": ["Invoices"],
+          "summary": "Get invoice by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Invoice details",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InvoiceResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Invoices"],
+          "summary": "Update an invoice",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceUpdateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Invoice updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InvoiceResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/invoices/{id}/payment": {
+        "put": {
+          "tags": ["Invoices"],
+          "summary": "Update payment status",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentUpdateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Payment updated successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PaymentResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/invoices/{id}/pay": {
+        "post": {
+          "tags": ["Invoices"],
+          "summary": "Make a payment",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Payment successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/PaymentResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/customers": {
+        "get": {
+          "tags": ["Customers"],
+          "summary": "Get all customers",
+          "responses": {
+            "200": {
+              "description": "List of customers",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomerListResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Customers"],
+          "summary": "Create a new customer",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerCreateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Customer created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/customers/{customerId}/invoices": {
+        "get": {
+          "tags": ["Customers"],
+          "summary": "Get invoices for a specific customer",
+          "parameters": [
+            {
+              "name": "customerId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of customer invoices",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/InvoiceListResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/customers/{id}": {
+        "get": {
+          "tags": ["Customers"],
+          "summary": "Get customer by ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "integer"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Customer details",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CustomerResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/biztory/recurring-invoices": {
+        "get": {
+          "tags": ["Recurring Invoices"],
+          "summary": "Get all recurring invoices",
+          "responses": {
+            "200": {
+              "description": "List of recurring invoices",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecurringInvoiceListResponse"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Recurring Invoices"],
+          "summary": "Create a new recurring invoice",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecurringInvoiceCreateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Recurring invoice created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RecurringInvoiceResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            }
+          }
+        },
+        "UserCreateRequest": {
+          "type": "object",
+          "required": ["email", "password", "name"],
+          "properties": {
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "format": "password"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "UserExistsResponse": {
+          "type": "object",
+          "properties": {
+            "success": {
+              "type": "boolean"
+            }
+          }
+        },
+        "UserCreatedResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            }
+          }
+        },
+        "Invoice": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "invoice_number": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "InvoiceResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "$ref": "#/components/schemas/Invoice"
+            }
+          }
+        },
+        "InvoiceListResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Invoice"
+              }
+            }
+          }
+        },
+        "InvoiceUpdateRequest": {
+          "type": "object",
+          "properties": {
+            "invoice_number": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "status": {
+              "type": "string"
+            }
+          }
+        },
+        "PaymentUpdateRequest": {
+          "type": "object",
+          "required": ["trans_id"],
+          "properties": {
+            "trans_id": {
+              "type": "integer"
+            }
+          }
+        },
+        "PaymentRequest": {
+          "type": "object",
+          "required": ["payment_date"],
+          "properties": {
+            "payment_date": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        },
+        "PaymentResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object"
+            }
+          }
+        },
+        "CustomerCreateRequest": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            }
+          }
+        },
+        "CustomerResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object"
+            }
+          }
+        },
+        "CustomerListResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/CustomerResponse"
+              }
+            }
+          }
+        },
+        "RecurringInvoiceCreateRequest": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "frequency": {
+              "type": "string"
+            },
+            "customer_id": {
+              "type": "integer"
+            }
+          }
+        },
+        "RecurringInvoiceResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "object"
+            }
+          }
+        },
+        "RecurringInvoiceListResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "data": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RecurringInvoiceResponse"
+              }
+            }
+          }
+        },
+        "ErrorResponse": {
+          "type": "object",
+          "properties": {
+            "error": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "apiKey": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "Authorization"
+        }
+      }
+    },
+    "security": [
+      {
+        "apiKey": []
+      }
+    ]
+  }
